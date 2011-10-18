@@ -1,0 +1,178 @@
+获取BMP图像的数据(以数组形式读取出来)&&将数组数据转成BMP图像
+作者:池育龙
+Last Updated:%%mtime
+
+%!includeconf:config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
+= 前提 =
+    很多时候,大家都有这样的需求,就是想更改一幅BMP图像中的某个点或者某个区域的颜色,或者说是将一个现有的数组(如0,1数组)转成BMP图像.
+    
+    这种需求解决的方法有很多,最方便的是在MATLAB中使用imread()命令读取图像,直接就可以读到这个图像所对应的RGB值,而且支持多种图片格式转换.不过MATLAB不是免费的,而且安装也比较麻烦.所以我们采用一种简单的方式:自己编写程序进行转换.
+
+    网上介绍的读取BMP图像数据,写BMP图像数据的方法大多是介绍性的,例如定义好BMP文件头,颜色表的数据结构,读取数据... 但是,对于一个简单的应用(如对本文题目所说的将数组转成BMP图像)来说,为了解决这个问题,我要先去理解BMP的格式,要去通读一次他的数据结构手册,无疑是痛苦而又非常低效的事情!有时候我们所要的仅仅是解决问题,解决自己目前的需求而已.我们想要的只是简单,方便的方法,而不是原理和理解过程.
+
+    所以,这篇文章的目的是:用尽量短的篇幅描述如何**快速地将BMP数据读取&&将数据转成BMP**
+= 目标读者 =    
+- 有C/C++基础 
+- 实际需求迫切
+- 想要了解BMP格式的人(-想深入了解BMP格式的人除外,请移步就读BMP格式手册-)
+
+
+= 正文 =
+    方法很简单,使用已经存在的库,并通过库来对BMP进行读写.
+
+    EasyBMP是加利福尼亚大学的Paul Macklin同学的开源项目[项目首页链接 http://easybmp.sourceforge.net],在主页和帮组手册里,Paul 同学已经很详细地描述了这个项目所要解决的问题,为什么不使用已有的BMP解码库(如不易于使用,使用了平台相关的库,导致不能跨平台等),有兴趣的同学可以去看.
+ 
+    首先下载EasyBMP项目,目前最新版本是1.06[下载地址: http://easybmp.sourceforge.net/download.html].
+
+    下载并解压之后,将*.h,*.cpp添加到你自己的工程中去即可,可以参考我的例子__我的代码库中__**2011-03-24 EasyBMP_simple_example**下载[我的代码库 https://github.com/xidiandaily/CodeBase]
+    
+    然后通过以下四步,即可完成题目的所提出的问题(需求).
+
+==一.读取BMP图像数据==
+
+    - 1.定义变量
+
+``BMP AnImage;//在定义变量之后,会自动创建一个1×1(长宽),位深度为24的BMP图``
+
+    - 2.读取图像
+
+``AnImage.ReadFromFile("sample.bmp");//sample.bmp图像需要在本地路径``
+
+    - 3.读取/修改数据
+
+``AnImage.SetBitDepth(8);//更改位深``
+``AnImage.SetSize(1024,758);//更改长宽``
+``Red = AnImage(10,15)->Red;//获取坐标为10,15的点红分量的值;``
+``Green = AnImage(10,15)->Green;//获取坐标为10,15的点Green分量的值``
+``Blue  = AnImage(10,15)->Blue;//获取坐标为10,15的点Green分量的值``
+
+``AnImage(14,18)->Red = 50;//设值``
+``AnImage(14,18)->Green = 50;``
+``AnImage(14,18)->Blue = 192;``
+``AnImage(14,18)->Alpha = 0;``
+
+    - 4.保存修改
+
+``AnImage.WriteToFile("sample_set.bmp");``
+ 
+
+==二.创建BMP图像数据==
+
+
+    - 1.定义变量
+
+``BMP AnImage;``
+    - 2.创建图像
+
+``AnImage.SetSize(1024,768);``
+
+    - 3.填写像素点数据
+
+``//可以按照上例进行填写,也可以用下面的API填写``
+
+``AnImage.SetPixel(14,18,rgb_color);//rgb_color为RGBApixel格式数据,有R、G、B分量``
+
+    - 4.保存修改
+
+``AnImage.WriteToFile("sample_set.bmp");``
+
+ 这样,就完成了BMP格式图像数据的读取和修改工作.
+
+
+= 完整example代码 =
+ 完整代码可以在我的代码库中**2011-03-24 EasyBMP_simple_example**下载[[我的代码库 https://github.com/xidiandaily/CodeBase]]
+#include "EasyBMP.h"
+
+int array[3][3]={
+{0,1,0,},
+{1,0,1,},
+{0,1,0,},
+};
+//数组转图像
+void array2bmp()
+{
+    int i,j;
+    BMP bmp;
+    RGBApixel pix_black={0};//R=0 G=0 B=0为黑色
+    RGBApixel pix_white={255,255,255,0};//白色
+
+    bmp.SetSize(3,3);
+    bmp.SetBitDepth(1);
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<3;j++)
+        {
+            if(array[i][j]==1)
+            {
+                bmp.SetPixel( i,  j,pix_black);
+            }
+            else
+            {
+                bmp.SetPixel( i,  j,pix_white);
+            }
+        }
+    }
+
+    bmp.WriteToFile("examp_array2bmp.bmp");
+    printf("array2bmp suc...\n");
+}
+
+//图像转数组
+void bmp2array()
+{
+    int i,j;
+    BMP bmp;
+    int *pdata=NULL;
+    int *phead=NULL;
+    int *buf=NULL;
+    int width;
+    int height;
+
+    bmp.ReadFromFile("examp_bmp2array.bmp");
+    width = bmp.TellWidth();
+    height= bmp.TellHeight();
+
+
+    pdata=(int*)malloc(width*height*sizeof(int));
+    phead = pdata;
+    for(i=0;i<height;i++)
+    {
+        for(j=0;j<width;j++)
+        {//打印模拟图,空白为'.',黑色为'M'
+            *pdata=bmp(j,i)->Red;//位深1,读Red分量即可
+            pdata++;
+        }
+    }
+    //save
+    pdata=phead;
+    for(i=0;i<height;i++)
+    {
+        for(j=0;j<width;j++)
+        {//打印至终端
+            printf("%d,",*pdata);
+            pdata++;
+        }
+        printf("\n");
+    }
+    printf("bmp2array suc...\n");
+    getchar();
+}
+int main()
+{
+    array2bmp();
+    bmp2array();
+
+    return 1;
+}
+ 
+
+= 后记 =
+    EasyBMP还有很多其他的功能,你可以去他的官网上查看或者查看源码上的API.
+
+    paul在手册上说,如果你发现程序有bug或个人需要支持,请发邮件给他[邮件地址 macklin01@users.sourceforge.net]][[bug反馈地址 http://sourceforge.net/tracker/?group_id=129425&atid=714761]].另外,他也很高兴听到EasyBMP在你项目上成功运行的消息(Paul would love to hear back from people who have successfully used EasyBMP in their own projects),所以,当你完成你的项目之后,发封感谢信给他吧 ;-)[Paul Macklin 邮件地址 macklin01@users.sourceforge.net].
+---------------------
+%!include: file_head.t2t

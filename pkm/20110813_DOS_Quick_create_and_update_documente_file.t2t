@@ -1,0 +1,60 @@
+DOS_快速创建和打开txt2tags.t2t文件
+作者:chiyl
+时间:%%mtime(%c)
+
+%!includeconf: config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
++使用说明+
+++使用DOS命令"WBWrite[文件名]"快速创建对应的文件++
+	  功能描述: @@
+	            1.当用户输入"WBWrite helloworld.t2t",则自动创建helloworld.t2t文件并编辑。@@
+	            2.当用户输入"WBWrite",则自动创建一个空的文件，并编辑;@@
+@@
+
+++使用DOS命令"WBWrite -update 编辑上次最后修改的t2t文件"++
+	功能描述:
+	1.当用户输入"WBWrite --update",则自动打开最近修改的文件并编辑。
+
++涉及的文件内容+
+++Perl脚本，文件名为"get_newest_filename.pl"++
+```
+#!/usr/bin/perl
+
+open (FILE_CONFIG,"< temp.deleme") or die "can not open the file:$!";
+
+$line=0;
+$content=0;
+while($content=<FILE_CONFIG>){
+   $line++;
+   if($line==6)
+   {
+   	 chomp($content);
+     print $content;
+   }
+}
+close(FILE_CONFIG);
+```
+++DOS文件内容++
+```
+cd E:\MyDocument
+E:
+if /I "%1"=="--update" (
+  dir *.t2t /o-d /w >temp.deleme
+  for /f %%i in ('get_newest_filename.pl') do set filename=%%i
+  rm temp.deleme
+  gvim "%filename%"
+)else if /I "%1" NEQ "" (
+	gvim "%1"
+)
+
+if /I "%1"=="" (
+        gvim
+)
+```
++环境变量设置+
+将"E:\MyDocument\"添加到环境变量中，并将WBWrite、get_newest_filename.pl,复制到该文件夹下即可使用该功能;
+---------------------
+%!include: file_head.t2t

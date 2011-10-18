@@ -1,0 +1,132 @@
+使用perl构造自己所属的专用词库(hack Spark English WordDisc_Kych)
+chiyl
+LastUpate:%%Mtime(%c)
+
+%!includeconf:config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
+
++文章目的及背景介绍:+
+前几天购买的英语词汇书中附赠了一款软件,能够按照书中的每一章的词汇进行考查，提供的考查方式有'看英文选中文'、'听音选中文'、'看中文选英文'和'单词拼写'这几项，很是符合我的需求。但是在使用了几个单元之后，发现了一个很重要的问题：该软件的词库和词汇书中的词库不一致，每个单元的词汇并不像他宣称的那样一一对应的。@@
+囧,要是这样，这款软件就完全没有意义了。后来转念一想，能不能以此软件为基础构造适合于自己的词库呢？本文将整个摸索的过程记录下来,用于以后自己参考.@@
+++需求及可行性分析:++
+  软件的目录结构如下:@@
+```
+  /..
+  |——data/
+  |——sound/
+  |_skin
+  .
+```
+  其中，sound中存放的是各个单词的发音;data中存放的是软件词库,而且，词库不出所料的以xml格式存储;-),看到这里，不禁精神一振,觉得修改它的词库是可行的.
+  词库格式:@@
+```
+<PACKAGE>
+<ITEM WID="1" E="abroad" FN="" P="[?'br?:d]" C="ad.①到国外,在国外②传开,到处" TFN="abroad.mp3"/>
+<ITEM WID="2" E="accord" FN="" P="[?'k?:d]" C="n.①一致,符合②(尤指国与国之间的)谅解,协议vi.(with)相符合,相一致,相和谐vt.授予,赠与,给予" TFN="accord.mp3"/>
+...
+</PACKAGE>  
+```
+++思路如下:++
+     词汇书的赠品中还包括了每个单元的MP3及对应的lrc文件，只要从lrc文件中取出所有单词，按顺序地在原来的词库中找到该单词相对应的项并取出。这样，就能得到新的词库，到那时，只需要吧WID的值更改一下即可。  
+
++工作环境及经验要求:+
+   - 工具:perl,UltraEdit,MS_dos,Cygwin easy
+   - 操作系统:windows xp
+   - 经验要求:熟悉基本的linux命令,熟悉正则表达式,熟悉perl语言即可.
+
+
+
++过程:+
+(过程如下)
+++从LRC文件中取出所有的单词。++
+```
+F:.
+│
+│  
+├─核心词汇
+│  ├─Word List 05
+│  │      Word List 05.lrc
+│  │      
+│  ├─Word List 06
+│  │      Word List 06.lrc
+│  │      
+│  ├─Word List 07
+│  │      Word List 07.lrc
+...
+│          
+├─次常用词汇
+│  ├─Word List 21
+│  │      Word List 21.lrc
+│  │      
+│  ├─Word List 22
+│  │      Word List 22.lrc
+
+```
+
+    正如上图所示，lrc文件分别在cd文件夹下面的5个一级文件夹30个二级文件夹中，如果用人工去一个个拷出来，显然太费时间,而且在文件路径中有空格的存在,无法使用copy < 'find'>.等命令。
+    最后,采用 find . -name "*.lrc" > lrcnamelist.txt,并将其处理成 cp ./核心词汇/Word List 05/Word List 05.lrc ./LRC 然后当脚本处理即可。
+    然后再用  cat *.lrc > wordlist.txt 得到新词库
+    从这一步获得的wordlist.txt中的内容如下:@@
+```
+abroad
+accord
+ache
+across
+```
+++从旧词库中取出单词项。++
+
+ 将wordlist.txt中的单词用正则表达式处理成
+```
+E="abroad"
+E="accord"
+E="ache"
+E="across"
+E="act"
+E="address"
+E="advance"
+```
+  创建get_word_info.pl文件,代码如下:
+```
+#!/usr/bin/perl -w
+if(!open WORDPOOL, "<" , "Word.dat")
+{
+	print "open file error\n";
+}
+
+while($srcline=<STDIN>)
+{
+	chomp($srcline);
+	print $srcline;
+	while(<WORDPOOL>)
+	{
+		if(/.*$srcline.*/)
+		{
+			print $_;
+		}
+	}
+	close WORDPOOL;	
+	if(!open WORDPOOL, "<" , "Word.dat")
+	{
+		print "open file error\n";
+	}
+}
+close WORDPOOL;	
+```
+   用命令 ./get_word_info > new_word.data,得到新词库
+```
+E="accord"	<ITEM WID="5" E="accord" FN="" P="[?'k?:d]" C="n.①一致,符合②(尤指国与国之间的)谅解,协议vi.(with)相符合,相一致,相和谐vt.授予,赠与,给予" TFN="accord.mp3"/>
+E="ache"	<ITEM WID="2462" E="ache" FN="" P="[eik]" C="vi.痛,疼痛" TFN="ache.mp3"/>
+E="across"	<ITEM WID="6" E="across" FN="" P="[?'kr?s]" C="prep.①横越,穿过②在…对面,与…交叉ad.①横过,穿过,横断②…宽,阔" TFN="across.mp3"/>
+E="act"	<ITEM WID="7" E="act" FN="" P="[?kt]" C="vi.①行动,做事②(on)起作用③表演n.①行为,动作②法令,条例③(一)幕" TFN="act.mp3"/>
+E="writhe"E="yacht"E="yearn"E="yolk"E="zenith"E="zest"E="zoology"
+```
+   对于旧词库中没有的单词,需要剔除这些单词.
++最后将WID的值修改成升序即可。+
+   
++总结+
+  
+---------------------
+%!include: file_head.t2t

@@ -1,0 +1,8 @@
+
+
+
+%!target: html
+%!style:style.css
+%!preproc: MY_HOME_SITE_PKM www.yulong520.com/pkm/
+%!postproc: @@ <BR>
+

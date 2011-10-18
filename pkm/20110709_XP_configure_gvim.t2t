@@ -1,0 +1,469 @@
+Dos_XP环境下配置gVim
+作者:chiyl
+时间：%%mtime(%c)
+
+%!includeconf:config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
++设计到的安装文件及版本说明+
+|| 文件名称 | 功能 | 版本说明 ||
+| gVim.exe | 主文件 | VI IMProved 7.3.46 |
+| tagslist.vim | 用于显示函数列表 | Ver 4.5 |
+| lucius IMprove | 用于文字高亮 | （自己根据lucius配色方案，参考之前SI风格进行修改） |
+| Exuberant CTAGS | 用于生成代码浏览的tags | Ver 5.8 |
+| coscope | 生成代码浏览的tags | Ver 15.7 |
+| omnicppcomplete.vim | 代码自动补全 | Ver 0.41 |
+| NERD_tree | 显示文件列表 | 4.1.0 |
+| echofunc.vim | NULL ||
+
++配置+
+++打开缩进等基本的编辑器编辑功能++
+```
+if(has("win32") || has("win95") || has("win64") || has("win16")) "判定当前操作系统类型
+    let g:iswindows=1
+else
+    let g:iswindows=0
+endif
+set nocompatible "不要vim模仿vi模式，建议设置，否则会有很多不兼容的问题
+syntax on"打开高亮
+if has("autocmd")
+    filetype plugin indent on "根据文件进行缩进
+    augroup vimrcEx
+        au!
+        autocmd FileType text setlocal textwidth=78
+        autocmd BufReadPost *
+                    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+                    \ exe "normal! g`\"" |
+                    \ endif
+    augroup END
+else
+    "智能缩进，相应的有cindent，官方说autoindent可以支持各种文件的缩进，但是效果会比只支持C/C++的cindent效果会差一点，但笔者并没有看出来
+    set autoindent " always set autoindenting on 
+endif " has("autocmd")
+set tabstop=4 "让一个tab等于4个空格
+"set vb t_vb=
+set nowrap "不自动换行
+set hlsearch "高亮显示结果
+set incsearch "在输入要搜索的文字时，vim会实时匹配
+set backspace=indent,eol,start whichwrap+=<,>,[,] "允许退格键的使用
+if(g:iswindows==1) "允许鼠标的使用
+    "防止linux终端下无法拷贝
+    if has('mouse')
+        set mouse=a
+    endif
+    au GUIEnter * simalt ~x
+endif
+"字体的设置
+set guifont=Bitstream_Vera_Sans_Mono:h9:cANSI "记住空格用下划线代替哦
+set gfw=幼圆:h10:cGB2312
+set go= "无菜单、工具栏"
+
+```
+++安装tagslist++
+	用于显示函数列表
+  在配置中添加如下配置脚本
+```
+if(has("win32") || has("win95") || has("win64") || has("win16"))
+    let g:vimrc_iswindows=1
+else
+    let g:vimrc_iswindows=0
+endif
+autocmd BufEnter * lcd %:p:h
+map <F12> :call Do_CsTag()<CR>
+nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>:copen<CR>
+nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>:copen<CR>
+nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>:copen<CR>
+nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>:copen<CR>
+nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>:copen<CR>
+nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:copen<CR>
+nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>:copen<CR>
+function Do_CsTag()
+    let dir = getcwd()
+    if filereadable("tags")
+        if(g:iswindows==1)
+            let tagsdeleted=delete(dir."\\"."tags")
+        else
+            let tagsdeleted=delete("./"."tags")
+        endif
+        if(tagsdeleted!=0)
+            echohl WarningMsg | echo "Fail to do tags! I cannot delete the tags" | echohl None
+            return
+        endif
+    endif
+    if has("cscope")
+        silent! execute "cs kill -1"
+    endif
+    if filereadable("cscope.files")
+        if(g:iswindows==1)
+            let csfilesdeleted=delete(dir."\\"."cscope.files")
+        else
+            let csfilesdeleted=delete("./"."cscope.files")
+        endif
+        if(csfilesdeleted!=0)
+            echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.files" | echohl None
+            return
+        endif
+    endif
+    if filereadable("cscope.out")
+        if(g:iswindows==1)
+            let csoutdeleted=delete(dir."\\"."cscope.out")
+        else
+            let csoutdeleted=delete("./"."cscope.out")
+        endif
+        if(csoutdeleted!=0)
+            echohl WarningMsg | echo "Fail to do cscope! I cannot delete the cscope.out" | echohl None
+            return
+        endif
+    endif
+    if(executable('ctags'))
+        "silent! execute "!ctags -R --c-types=+p --fields=+S *"
+        silent! execute "!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q ."
+    endif
+    if(executable('cscope') && has("cscope") )
+        if(g:iswindows!=1)
+            silent! execute "!find . -name '*.h' -o -name '*.c' -o -name '*.cpp' -o -name '*.java' -o -name '*.cs' > cscope.files"
+        else
+            silent! execute "!dir /s/b *.c,*.cpp,*.h,*.java,*.cs >> cscope.files"
+        endif
+        silent! execute "!cscope -b"
+        execute "normal :"
+        if filereadable("cscope.out")
+            execute "cs add cscope.out"
+        endif
+    endif
+endfunction
+
+"进行Tlist的设置
+"TlistUpdate可以更新tags
+map <F3> :silent! Tlist<CR> "按下F3就可以呼出了
+let Tlist_Ctags_Cmd='ctags' "因为我们放在环境变量里，所以可以直接执行
+let Tlist_Use_Right_Window=0 "让窗口显示在右边，0的话就是显示在左边
+let Tlist_Show_One_File=0 "让taglist可以同时展示多个文件的函数列表，如果想只有1个，设置为1
+let Tlist_File_Fold_Auto_Close=1 "非当前文件，函数列表折叠隐藏
+let Tlist_Exit_OnlyWindow=1 "当taglist是最后一个分割窗口时，自动推出vim
+"是否一直处理tags.1:处理;0:不处理
+let Tlist_Process_File_Always=0 "不是一直实时更新tags，因为没有必要
+let Tlist_Inc_Winwidth=0
+
+```
+++lucius++
+文件名"lucius.vim"
+```
+" Lucius vim color file
+" Maintainer:   Jonathan Filip <jfilip1024@gmail.com>
+" Version: 3.5
+
+" UPDATE by Chiyl
+" Maintainer:   Lawrence Chi <xidiandaily@126.com>
+" Version: 3.6
+
+set background=dark
+hi clear
+if exists("syntax_on")
+    syntax reset
+endif
+let colors_name="lucius"
+
+
+" == Normal color ==
+hi Normal           guifg=#00c8c8           guibg=#202020
+hi Normal           ctermfg=253             ctermbg=234
+
+
+" == Comments ==
+hi Comment          guifg=#e0e2e2                                   gui=none
+hi Comment          ctermfg=240                                     cterm=none
+
+
+" == Constants ==
+" any constant
+hi Constant         guifg=#ff394f                                   gui=none
+hi Constant         ctermfg=74                                      cterm=none
+" strings
+hi String           guifg=#ffffff                                   gui=none
+hi String           ctermfg=110                                     cterm=none
+" character constant
+hi Character        guifg=#80c0d8                                   gui=none
+hi Character        ctermfg=110                                     cterm=none
+" numbers decimal/hex
+hi Number           guifg=#c84600                                   gui=none
+hi Number           ctermfg=74                                      cterm=none
+" true, false
+hi Boolean          guifg=#129821                                   gui=none
+hi Boolean          ctermfg=74                                      cterm=none
+" float
+hi Float            guifg=#129821                                   gui=none
+hi Float            ctermfg=74                                      cterm=none
+
+
+" == Identifiers ==
+" any variable name
+hi Identifier       guifg=#86c6b6                                   gui=none 
+hi Identifier       ctermfg=116                                     cterm=none
+" function, method, class
+hi Function         guifg=#86c6b6                                   gui=none 
+hi Function         ctermfg=116                                     cterm=none
+
+
+" == Statements ==
+" any statement
+hi Statement        guifg=#b3d38c                                   gui=none
+hi Statement        ctermfg=150                                     cterm=none
+" if, then, else
+hi Conditional      guifg=#ffff00                                   gui=none
+hi Conditional      ctermfg=150                                     cterm=none
+" try, catch, throw, raise
+hi Exception        guifg=#b3d38c                                   gui=none
+hi Exception        ctermfg=150                                     cterm=none
+" for, while, do
+hi Repeat           guifg=#ffff00                                   gui=none
+hi Repeat           ctermfg=150                                     cterm=none
+" case, default
+hi Label            guifg=#ffff00                                   gui=none
+hi Label            ctermfg=150                                     cterm=none
+" sizeof, +, *
+hi Operator         guifg=#ffff00                                   gui=none
+hi Operator         ctermfg=150                                     cterm=none
+" any other keyword
+hi Keyword          guifg=#ffff00                                   gui=none
+hi Keyword          ctermfg=150                                     cterm=none
+
+
+" == Preprocessor ==
+" generic preprocessor
+hi PreProc          guifg=#e0e8b0                                   gui=none
+hi PreProc          ctermfg=187                                     cterm=none
+" #include
+hi Include          guifg=#00be00                                   gui=none
+hi Include          ctermfg=187                                     cterm=none
+" #define
+hi Define           guifg=#00be00                                   gui=none
+hi Define           ctermfg=187                                     cterm=none
+" same as define
+hi Macro            guifg=#00be00                                   gui=none
+hi Macro            ctermfg=187                                     cterm=none
+" #if, #else, #endif
+hi PreCondit        guifg=#ffff00                                   gui=none
+hi PreCondit        ctermfg=187                                     cterm=none
+
+
+" == Types ==
+" int, long, char
+hi Type             guifg=#00be00                                   gui=none
+hi Type             ctermfg=115                                     cterm=none
+" static, register, volative
+hi StorageClass     guifg=#00be00                                   gui=none
+hi StorageClass     ctermfg=115                                     cterm=none
+" struct, union, enum
+hi Structure        guifg=#00be00                                   gui=none
+hi Structure        ctermfg=115                                     cterm=none
+" typedef
+hi Typedef          guifg=#ffff00                                   gui=none
+hi Typedef          ctermfg=115                                     cterm=none
+
+
+" == Special ==
+" any special symbol
+hi Special          guifg=#b0a0c0                                   gui=none
+hi Special          ctermfg=182                                     cterm=none
+" special character in a constant
+hi SpecialChar      guifg=#b0a0c0                                   gui=none
+hi SpecialChar      ctermfg=182                                     cterm=none
+" things you can CTRL-]
+hi Tag              guifg=#b0a0c0                                   gui=none
+hi Tag              ctermfg=182                                     cterm=none
+" character that needs attention
+hi Delimiter        guifg=#b0a0c0                                   gui=none
+hi Delimiter        ctermfg=182                                     cterm=none
+" special things inside a comment
+hi SpecialComment   guifg=#b0a0c0                                   gui=none
+hi SpecialComment   ctermfg=182                                     cterm=none
+" debugging statements
+hi Debug            guifg=#b0a0c0           guibg=NONE              gui=none
+hi Debug            ctermfg=182             ctermbg=NONE            cterm=none
+
+
+" == Text Markup ==
+" text that stands out, html links
+hi Underlined       guifg=fg                                        gui=underline
+hi Underlined       ctermfg=fg                                      cterm=underline
+" any erroneous construct
+hi Error            guifg=#e37170           guibg=#432323           gui=none
+hi Error            ctermfg=167             ctermbg=236            cterm=none
+" todo, fixme, note, xxx
+hi Todo             guifg=#e0e090           guibg=NONE              gui=underline
+hi Todo             ctermfg=186             ctermbg=NONE            cterm=underline
+" match parenthesis, brackets
+hi MatchParen       guifg=#00ff00           guibg=NONE              gui=bold
+hi MatchParen       ctermfg=46              ctermbg=NONE            cterm=bold
+" the '~' and '@' and showbreak, '>' double wide char doesn't fit on line
+hi NonText          guifg=#404040                                   gui=none
+hi NonText          ctermfg=238                                     cterm=none
+" meta and special keys used with map, unprintable characters
+hi SpecialKey       guifg=#405060
+hi SpecialKey       ctermfg=239
+" titles for output from :set all, :autocmd, etc
+hi Title            guifg=#62bdde                                   gui=none
+hi Title            ctermfg=74                                      cterm=none
+
+
+" == Ignore ==
+" left blank, hidden
+hi Ignore           guifg=bg
+hi Ignore           ctermfg=bg
+
+
+" == Text Selection ==
+" character under the cursor
+hi Cursor           guifg=bg                guibg=#a3e3ed
+hi Cursor           ctermfg=bg              ctermbg=153
+" like cursor, but used when in IME mode
+hi CursorIM         guifg=bg                guibg=#96cdcd
+hi CursorIM         ctermfg=bg              ctermbg=116
+" cursor column
+hi CursorColumn     guifg=NONE              guibg=#404448           gui=none
+hi CursorColumn     ctermfg=NONE            ctermbg=236             cterm=none
+" cursor line/row
+hi CursorLine       gui=NONE                guibg=#404448           gui=none
+hi CursorLine       cterm=NONE              ctermbg=236             cterm=none
+" visual mode selection
+hi Visual           guifg=NONE              guibg=#364458
+hi Visual           ctermfg=NONE            ctermbg=24
+" visual mode selection when vim is not owning the selection (x11 only)
+hi VisualNOS        guifg=fg                                        gui=underline
+hi VisualNOS        ctermfg=fg                                      cterm=underline
+" highlight incremental search text; also highlight text replaced with :s///c
+hi IncSearch        guifg=#66ffff                                   gui=reverse
+hi IncSearch        ctermfg=87                                      cterm=reverse
+" hlsearch (last search pattern), also used for quickfix
+hi Search                                    guibg=#ffaa33          gui=none
+hi Search                                    ctermbg=214            cterm=none
+
+
+" == UI ==
+" normal item in popup
+hi Pmenu            guifg=#e0e0e0           guibg=#303840           gui=none
+hi Pmenu            ctermfg=253             ctermbg=233             cterm=none
+" selected item in popup
+hi PmenuSel         guifg=#cae682           guibg=#505860           gui=none
+hi PmenuSel         ctermfg=186             ctermbg=237             cterm=none
+" scrollbar in popup
+hi PMenuSbar                                guibg=#505860           gui=none
+hi PMenuSbar                                ctermbg=59              cterm=none
+" thumb of the scrollbar in the popup
+hi PMenuThumb                               guibg=#808890           gui=none
+hi PMenuThumb                               ctermbg=102             cterm=none
+" status line for current window
+hi StatusLine       guifg=#e0e0e0           guibg=#363946           gui=bold
+hi StatusLine       ctermfg=254             ctermbg=237             cterm=bold
+" status line for non-current windows
+hi StatusLineNC     guifg=#767986           guibg=#363946           gui=none
+hi StatusLineNC     ctermfg=244             ctermbg=237             cterm=none
+" tab pages line, not active tab page label
+hi TabLine          guifg=#b6bf98           guibg=#363946           gui=none
+hi TabLine          ctermfg=244             ctermbg=236             cterm=none
+" tab pages line, where there are no labels
+hi TabLineFill      guifg=#cfcfaf           guibg=#363946           gui=none
+hi TabLineFill      ctermfg=187             ctermbg=236             cterm=none
+" tab pages line, active tab page label
+hi TabLineSel       guifg=#efefef           guibg=#414658           gui=bold
+hi TabLineSel       ctermfg=254             ctermbg=236             cterm=bold
+" column separating vertically split windows
+hi VertSplit        guifg=#777777           guibg=#363946           gui=none
+hi VertSplit        ctermfg=242             ctermbg=237             cterm=none
+" line used for closed folds
+hi Folded           guifg=#d0e0f0           guibg=#202020           gui=none
+hi Folded           ctermfg=117             ctermbg=235             cterm=none
+" column on side used to indicated open and closed folds
+hi FoldColumn       guifg=#c0c0d0           guibg=#363946           gui=none
+hi FoldColumn       ctermfg=117             ctermbg=238             cterm=none
+
+
+" == Spelling ==
+" word not recognized
+hi SpellBad         guisp=#ee0000                                   gui=undercurl
+hi SpellBad                                 ctermbg=196             cterm=undercurl
+" word not capitalized
+hi SpellCap         guisp=#eeee00                                   gui=undercurl
+hi SpellCap                                 ctermbg=226             cterm=undercurl
+" rare word
+hi SpellRare        guisp=#ffa500                                   gui=undercurl
+hi SpellRare                                ctermbg=214             cterm=undercurl
+" wrong spelling for selected region
+hi SpellLocal       guisp=#ffa500                                   gui=undercurl
+hi SpellLocal                               ctermbg=214             cterm=undercurl
+
+
+" == Diff ==
+" added line
+hi DiffAdd          guifg=#80a090           guibg=#313c36           gui=none
+hi DiffAdd          ctermfg=fg              ctermbg=22              cterm=none
+" changed line
+hi DiffChange       guifg=NONE              guibg=#4a343a           gui=none
+hi DiffChange       ctermfg=fg              ctermbg=52              cterm=none
+" deleted line
+hi DiffDelete       guifg=#6c6661           guibg=#3c3631           gui=none
+hi DiffDelete       ctermfg=fg              ctermbg=58              cterm=none
+" changed text within line
+hi DiffText         guifg=#f05060           guibg=#4a343a           gui=bold
+hi DiffText         ctermfg=203             ctermbg=52              cterm=bold
+
+
+" == Misc ==
+" directory names and other special names in listings
+hi Directory        guifg=#c0e0b0                                   gui=none
+hi Directory        ctermfg=151                                     cterm=none
+" error messages on the command line
+hi ErrorMsg         guifg=#ee0000           guibg=NONE              gui=none
+hi ErrorMsg         ctermfg=196             ctermbg=NONE            cterm=none
+" columns where signs are displayed (used in IDEs)
+hi SignColumn       guifg=#9fafaf           guibg=#181818           gui=none
+hi SignColumn       ctermfg=145             ctermbg=233             cterm=none
+" line numbers
+hi LineNr           guifg=#818698           guibg=#363946
+hi LineNr           ctermfg=245             ctermbg=237
+" the 'more' prompt when output takes more than one line
+hi MoreMsg          guifg=#2e8b57                                   gui=none
+hi MoreMsg          ctermfg=29                                      cterm=none
+" text showing what mode you are in
+hi ModeMsg          guifg=#76d5f8           guibg=NONE              gui=none
+hi ModeMsg          ctermfg=117             ctermbg=NONE            cterm=none
+" the hit-enter prompt (show more output) and yes/no questions
+hi Question         guifg=fg                                        gui=none
+hi Question         ctermfg=fg                                      cterm=none
+" warning messages
+hi WarningMsg       guifg=#e5786d                                   gui=none
+hi WarningMsg       ctermfg=173                                     cterm=none
+" current match in the wildmenu completion
+hi WildMenu         guifg=#cae682           guibg=#363946           gui=bold,underline
+hi WildMenu         ctermfg=16              ctermbg=186             cterm=bold
+" color column highlighting
+hi ColorColumn      guifg=NONE              guibg=#403630           gui=none
+hi ColorColumn      ctermfg=NONE            ctermbg=95              cterm=none
+
+
+" == Vimwiki Colors ==
+
+hi VimwikiHeader1   guifg=#e0e8b0                                   gui=bold
+hi VimWikiHeader1   ctermfg=187                                     cterm=none
+hi VimwikiHeader2   guifg=#80c0d8                                   gui=bold
+hi VimwikiHeader2   ctermfg=110                                     cterm=none
+hi VimwikiHeader3   guifg=#b3d38c                                   gui=bold
+hi VimwikiHeader3   ctermfg=150                                     cterm=none
+hi VimwikiHeader4   guifg=#86c6b6                                   gui=bold 
+hi VimwikiHeader4   ctermfg=116                                     cterm=none
+hi VimwikiHeader5   guifg=#b0a0c0                                   gui=bold
+hi VimwikiHeader5   ctermfg=182                                     cterm=none
+hi VimwikiHeader6   guifg=#90d0a0                                   gui=bold
+hi VimwikiHeader6   ctermfg=115                                     cterm=none
+
+```
+
++ 无 +
+
+
+---------------------
+%!include: file_head.t2t
