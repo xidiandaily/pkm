@@ -85,6 +85,7 @@ Last Updated:%%mtime
 
 = 完整example代码 =
  完整代码可以在我的代码库中**2011-03-24 EasyBMP_simple_example**下载[[我的代码库 https://github.com/xidiandaily/CodeBase]]
+```
 #include "EasyBMP.h"
 
 int array[3][3]={
@@ -168,7 +169,7 @@ int main()
 
     return 1;
 }
- 
+``` 
 
 = 后记 =
     EasyBMP还有很多其他的功能,你可以去他的官网上查看或者查看源码上的API.

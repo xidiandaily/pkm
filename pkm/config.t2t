@@ -4,5 +4,6 @@
 %!target: html
 %!style:style.css
 %!preproc: MY_HOME_SITE_PKM www.yulong520.com/pkm/
+%!postproc:WEBSITE_PKM_RESOURCE /pkm/Resource/
 %!postproc: @@ <BR>
 
