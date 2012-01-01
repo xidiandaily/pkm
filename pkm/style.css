@@ -19,7 +19,7 @@ body {
     margin-top: 0px;
     margin-bottom: 0px;
     margin-right: auto;
-    margin-left: auto;
+    margin-left: 5px;
 }
 
 #sidebar {
@@ -79,9 +79,25 @@ a:link img {
 	border:0px;
 }
 
-img {border: none;}
+img {
+    padding:0px;
+    border:1px solid black;
+    -moz-box-shadow:3px 3px 4px #000;
+    -webkit-box-shadow:3px 3px 4px #000;
+    box-shadow:3px 3px 4px #000;
+    background:#fff;
+    filter:progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color=’#000000′);
+}
 .post img {margin-left:auto;margin-right:auto;padding:10px;border:1px solid #000;-moz-box-shadow:3px 3px 4px #000;-webkit-box-shadow:3px 3px 4px #000;box-shadow:3px 3px 4px #000;background:#fff;filter:progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color=’#000000′);}
-.post a img{padding:10px;border:1px solid #000;-moz-box-shadow:3px 3px 4px #000;-webkit-box-shadow:3px 3px 4px #000;box-shadow:3px 3px 4px #000;background:#fff;filter:progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color=’#000000′);}
+.post a img{
+    padding:10px;
+    border:1px solid #000;
+    -moz-box-shadow:3px 3px 4px #000;
+    -webkit-box-shadow:3px 3px 4px #000;
+    box-shadow:3px 3px 4px #000;
+    background:#fff;
+    filter:progid:DXImageTransform.Microsoft.Shadow(Strength=4,Direction=135,Color=’#000000′);
+}
 
 .imgleft {
 	float:left;
@@ -421,24 +437,32 @@ small, #sidebar ul ul li, #sidebar ul ol li, .nocomments, .postmetadata, strike 
 }
 
 /*文章中表格的樣式*/
-table.art_tbl {
-    border-top: 1px solid #000000;
-    border-left: 1px solid #000000;
+table {
+    border-top: 2px solid #CCC;
+    border-left: 2px solid #CCC;
+    border-spacing: 0;
     border-collapse: collapse;
 }
+th {
+    background-color: #95A8A0;
+    border-right: 2px solid #CCC;
+    border-bottom: 2px solid #CCC;
+    text-align: center;
+    padding: 5px;
+}
 
-th.art_tbl_th {
-    border-right: 1px solid #000000;
-    border-bottom: 1px solid #000000;
+.post th,td {
+    border-right: 2px solid #CCC;
+    border-bottom: 2px solid #CCC;
     border-collapse: collapse;
+    padding: 5px;
+}
+.post th {
     background-color: #99b3ff;
+    text-align: center;
+    padding: 5px;
 }
 
-td.art_tbl_td {
-    border-right: 1px solid #000000;
-    border-bottom: 1px solid #000000;
-    border-collapse: collapse;
-}
 
 pre, code, tt { font-family: Monaco, Consolas, monospace; }
 pre, code { border: 1px solid #CCC; background: #F0F0F0; }

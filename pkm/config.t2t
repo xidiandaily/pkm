@@ -3,7 +3,9 @@
 
 %!target: html
 %!style:style.css
-%!preproc: MY_HOME_SITE_PKM www.yulong520.com/pkm/
+%!preproc: MY_HOME_SITE_PKM pkm/
 %!postproc:WEBSITE_PKM_RESOURCE /pkm/Resource/
+%!postproc:http://www.yulong520.com /
+%!postproc:style.css /style.css
+%!postproc: </HEAD> <script type="text/javascript">\n\n  var _gaq = _gaq || [];\n  _gaq.push(['_setAccount', 'UA-26367267-1']);\n  _gaq.push(['_trackPageview']);\n\n  (function() {\n    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;\n    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';\n    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);\n  })();\n\n</script>\n</HEAD>
 %!postproc: @@ <BR>
-
