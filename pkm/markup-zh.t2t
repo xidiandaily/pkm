@@ -1,0 +1,128 @@
+Txt2tags 标记示例
+展示结构化标记与HTML的检出效果
+
+%!includeconf:config.t2t
+
+% TRANSLATOR: the images won't appear, it is normal, don't worry
+%!preproc: t2t\.png	/pkm/resource/t2tpowered.png
+
+---------------------
+%!include: file_head.t2t
+---------------------
+	这篇文章主要是测试本站(yulong520.com)的 css 对各种标记的显示效果。本文来源：http://txt2tags.org/markup.html。@@
+	中文版本由 周琦([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet])翻译。@@
+	中文地址：http://code.google.com/p/txt2tags/source/browse/trunk/doc/Chinese/markup-zh/markup-zh.t2t@@
+
+
+''' <table>
+''' <tr><th colspan="2">
+
+''' 基础 BASIC
+
+''' </th></tr><tr><td class="t2t">
+%!include: ``title.t2t``
+''' </td><td>
+%!include: title.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``numtitle.t2t``
+''' </td><td>
+%!include: numtitle.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``para.t2t``
+''' </td><td>
+%!include: para.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``comment.t2t``
+''' </td><td>
+%!include: comment.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``beauti.t2t``
+''' </td><td>
+%!include: beauti.t2t
+
+''' </td></tr><tr><th colspan="2">
+
+''' 列表 LISTS
+
+''' </th></tr><tr><td class="t2t">
+%!include: ``list.t2t``
+''' </td><td>
+%!include: list.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``numlist.t2t``
+''' </td><td>
+%!include: numlist.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``deflist.t2t``
+''' </td><td>
+%!include: deflist.t2t
+
+''' </td></tr><tr><th colspan="2">
+
+''' 区域 AREAS
+
+''' </th></tr><tr><td class="t2t">
+%!include: ``quote.t2t``
+''' </td><td>
+%!include: quote.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``verb.t2t``
+''' </td><td>
+%!include: verb.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``verbline.t2t``
+''' </td><td>
+%!include: verbline.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``raw.t2t``
+''' </td><td>
+%!include: raw.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``rawline.t2t``
+''' </td><td>
+%!include: rawline.t2t
+
+''' </td></tr><tr><th colspan="2">
+
+''' 其它 OTHER
+
+''' </th></tr><tr><td class="t2t">
+%!include: ``table.t2t``
+''' </td><td>
+%!include: table.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``image.t2t``
+''' </td><td>
+%!include: image.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``link.t2t``
+''' </td><td>
+%!include: link.t2t
+
+''' </td></tr><tr><td class="t2t">
+%!include: ``bar.t2t``
+''' </td><td>
+%!include: bar.t2t
+
+''' </td></tr>
+''' </table>
+
+
+Translated to Chinese by 周琦([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet]).
+
+动力源自: [txt2tags http://txt2tags.org]
+---------------------
+%!include: file_head.t2t
+---------------------

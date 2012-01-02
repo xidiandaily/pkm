@@ -463,15 +463,26 @@ th {
     padding: 5px;
 }
 
+p{
+    padding: .3em;
+    margin: 0 4em 0 2em; 
+    font: 75% "Consolas","DejaVu Sans YuanTi","Microsoft YaHei","WenQuanYi Zen Hei","微软雅黑","文泉驿正黑";
+    font-size: 13px;	 	 
+ }
+
+li{
+    font-size: 13px;	 	 
+ }
+
 
 pre, code, tt { font-family: Monaco, Consolas, monospace; }
-pre, code { border: 1px solid #CCC; background: #F0F0F0; }
+pre, code { border: 1px solid #CCC; background: #F0F0F0; color:green}
 h1 code, h2 code, h3 code, h4 code, h5 code, h6 code { border: none; background: none; }
 pre {
 	 padding: .3em;
 	 margin: 0 4em 0 2em; 
 	 font: 75% "Consolas","DejaVu Sans YuanTi","Microsoft YaHei","WenQuanYi Zen Hei","微软雅黑","文泉驿正黑";
-	 font-size: 11px;	 	 
+	 font-size: 13px;	 	 
 	 }
 code { padding: .05em .2em; }
 pre code { padding: none; border: none; }
