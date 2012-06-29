@@ -1,0 +1,172 @@
+【小工具】在GDB中方便显示当前栈帧信息的小脚本
+chiyl
+LastUpdate: %%mtime(%c)
+
+%!includeconf:config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
+最近在看《深入理解计算机系统》，对其中的栈的内容十分感兴趣，尤其在解他的练习 CS:APP Labs Bomb[题目在这里: http://csapp.cs.cmu.edu/public/labs.html] 时，对栈内容的解读十分重要。在反汇编得到的源码中，对栈的内容的读取多是通过类似语句（ mov  0x8(%ebp),%edx）来赋值，而gdb的 **x/20xw $esp** 指令只能4列打印出栈的内容，且对基址的位置不清晰，对于分析十分不便。@@
+因此，我写了这个小的perl脚本，配合gdb（使用方法如下），使其栈的显示更加方便,使用方法如下：@@
+[WEBSITE_PKM_RESOURCE20120629_gdb_use.jpg]
+
++使用环境+
+
+	编译器：gdb@@
+
++脚本输入格式+
+    - 第一行为需要指明的寄存器位置（如 %esp）的值
+    - 第二行及以后为栈的值
+
+    输入内容如下所示：@@
+```
+(gdb) $2 = (void *) 0x22ff68
+(gdb) 0x22ff60:	0x77c04e42	0x0022ff80	0x0022ffb0	0x0040124b
+0x22ff70:	0x004013c0	0x7ffd5000	0x0022ffb0	0x0040124b
+0x22ff80:	0x00000001	0x003e2cf0	0x003e3100	0x00404000
+0x22ff90:	0x0022ffa4	0xffffffff	0x0022ffa8	0x00000000
+0x22ffa0:	0x00000000	0x003e3100	0x00000000	0x7ffd5000
+0x22ffb0:	0x0022ffc0	0x00401298	0x00000001	0x00000009
+0x22ffc0:	0x0022fff0	0x7c817077	0x7c80189c	0x77bff941
+0x22ffd0:	0x7ffd5000	0x8054c6ed
+(gdb) 
+```
+
+
++命令+
+
+```
+gdb>shell perl getstack.pl < temp.cmp
+```
+
++脚本输出+
+
+```
+0x22ffdc :	 
+0x22ffd8 :	 
+0x22ffd4 :	 0x8054c6ed
+0x22ffd0 :	 0x7ffd5000
+0x22ffcc :	 0x77bff941
+0x22ffc8 :	 0x7c80189c
+0x22ffc4 :	 0x7c817077
+0x22ffc0 :	 0x0022fff0
+0x22ffbc :	 0x00000009
+0x22ffb8 :	 0x00000001
+0x22ffb4 :	 0x00401298
+0x22ffb0 :	 0x0022ffc0
+0x22ffac :	 0x7ffd5000
+0x22ffa8 :	 0x00000000
+0x22ffa4 :	 0x003e3100
+0x22ffa0 :	 0x00000000
+0x22ff9c :	 0x00000000
+0x22ff98 :	 0x0022ffa8
+0x22ff94 :	 0xffffffff
+0x22ff90 :	 0x0022ffa4
+0x22ff8c :	 0x00404000
+0x22ff88 :	 0x003e3100
+0x22ff84 :	 0x003e2cf0
+0x22ff80 :	 0x00000001
+0x22ff7c :	 0x0040124b
+0x22ff78 :	 0x0022ffb0
+0x22ff74 :	 0x7ffd5000
+0x22ff70 :	 0x004013c0
+0x22ff6c :	 0x0040124b
+0x22ff68 :	 0x0022ffb0	<---$ebp(0x22ff68)
+0x22ff64 :	 0x0022ff80
+0x22ff60 :	 0x77c04e42
+```
+
++脚本内容+
+
+文件名称：getstack.pl
+```
+#!/usr/bin/perl
+
+my $ebp=0;
+my @stack;
+my $l=0;
+
+while($line=<STDIN>)
+{
+    chomp($line);
+    if($l==0 and $ebp==0)
+    {
+        $ebp=$line;
+        $ebp=~s/.*(\b0x.*\b)$/\1/;
+        $ebp=hex($ebp);
+    }
+    if($line =~ m/\b0x.*:/)
+    {
+        my $addr=$line;
+        my $tail=$line;
+        my @vaule;
+        my $count=0;
+
+        $addr =~ s/.*(\b0x.*):(.*)/\1/;
+        $tail =~ s/.*(\b0x.*):(.*)/\2/;
+        @value=split/\t/,$tail;
+
+        $addr = hex($addr);
+        $count=1;
+        while($count<5)
+        {
+            if($ebp==$addr)
+            {
+                $stack[$l]=sprintf "0x%x :\t %s\t<---\$ebp(0x%x)\n", $addr,$value[$count],$ebp;
+            }
+            else
+            {
+                $stack[$l]=sprintf "0x%x :\t %s\n", $addr,$value[$count];
+            }
+            $count = $count+1;
+            $addr = $addr + 4;
+            $l++;
+        }
+    }
+}
+@stack=reverse(@stack);
+print @stack;
+
+```
+
++使用实例:在gdb脚本中使用+
+文件名称:cmp.gdb
+功能：打印出每一步(汇编指令)的前后的寄存器的值和栈值，执行前内容存在 before.cmp,执行后的内容存在 after.bmp，使得可以通过文本比较工具进行比较
+使用：gdb 命令中执行 **so cmp.gdb**
+```
+shell rm before.cmp
+shell rm after.cmp
+shell rm temp.cmp
+set logging on before.cmp
+info registers
+set logging off before.cmp
+set logging on temp.cmp
+print $ebp
+x/30xw $esp
+set logging off temp.cmp
+shell perl getstack.pl < temp.cmp>>before.cmp
+shell rm temp.cmp
+si
+set logging on after.cmp
+info registers
+set logging off after.cmp
+set logging on temp.cmp
+print $ebp
+x/30xw $esp
+set logging off temp.cmp
+shell perl getstack.pl < temp.cmp>>after.cmp
+```
+**结果：**@@
+[WEBSITE_PKM_RESOURCE20120629_gdb_result.jpg]
+
++附件+
+解《深入理解计算机系统》时使用到的文件：@@
+getstack.pl:[WEBSITE_PKM_RESOURCEgetstack.txt] @@
+temp.cmp:[WEBSITE_PKM_RESOURCEtemp.cmp] @@
+before.cmp:[WEBSITE_PKM_RESOURCEbefore.cmp] @@
+after.cmp:[WEBSITE_PKM_RESOURCEafter.cmp] @@
+cmp.gdb:[WEBSITE_PKM_RESOURCEcmp.gdb] @@
+
+---------------------
+%!include: file_head.t2t
