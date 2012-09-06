@@ -1,5 +1,5 @@
-Txt2tags æ ‡è®°ç¤ºä¾‹
-å±•ç¤ºç»“æ„åŒ–æ ‡è®°ä¸HTMLçš„æ£€å‡ºæ•ˆæœ
+Txt2tags ±ê¼ÇÊ¾Àı
+Õ¹Ê¾½á¹¹»¯±ê¼ÇÓëHTMLµÄ¼ì³öĞ§¹û
 
 %!includeconf:config.t2t
 
@@ -9,15 +9,15 @@ Txt2tags æ ‡è®°ç¤ºä¾‹
 ---------------------
 %!include: file_head.t2t
 ---------------------
-	è¿™ç¯‡æ–‡ç« ä¸»è¦æ˜¯æµ‹è¯•æœ¬ç«™(yulong520.com)çš„ css å¯¹å„ç§æ ‡è®°çš„æ˜¾ç¤ºæ•ˆæœã€‚æœ¬æ–‡æ¥æºï¼šhttp://txt2tags.org/markup.htmlã€‚@@
-	ä¸­æ–‡ç‰ˆæœ¬ç”± å‘¨ç¦([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet])ç¿»è¯‘ã€‚@@
-	ä¸­æ–‡åœ°å€ï¼šhttp://code.google.com/p/txt2tags/source/browse/trunk/doc/Chinese/markup-zh/markup-zh.t2t@@
+	ÕâÆªÎÄÕÂÖ÷ÒªÊÇ²âÊÔ±¾Õ¾(yulong520.com)µÄ css ¶Ô¸÷ÖÖ±ê¼ÇµÄÏÔÊ¾Ğ§¹û¡£±¾ÎÄÀ´Ô´£ºhttp://txt2tags.org/markup.html¡£@@
+	ÖĞÎÄ°æ±¾ÓÉ ÖÜçù([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet])·­Òë¡£@@
+	ÖĞÎÄµØÖ·£ºhttp://code.google.com/p/txt2tags/source/browse/trunk/doc/Chinese/markup-zh/markup-zh.t2t@@
 
 
 ''' <table>
 ''' <tr><th colspan="2">
 
-''' åŸºç¡€ BASIC
+''' »ù´¡ BASIC
 
 ''' </th></tr><tr><td class="t2t">
 %!include: ``title.t2t``
@@ -46,7 +46,7 @@ Txt2tags æ ‡è®°ç¤ºä¾‹
 
 ''' </td></tr><tr><th colspan="2">
 
-''' åˆ—è¡¨ LISTS
+''' ÁĞ±í LISTS
 
 ''' </th></tr><tr><td class="t2t">
 %!include: ``list.t2t``
@@ -65,7 +65,7 @@ Txt2tags æ ‡è®°ç¤ºä¾‹
 
 ''' </td></tr><tr><th colspan="2">
 
-''' åŒºåŸŸ AREAS
+''' ÇøÓò AREAS
 
 ''' </th></tr><tr><td class="t2t">
 %!include: ``quote.t2t``
@@ -94,7 +94,7 @@ Txt2tags æ ‡è®°ç¤ºä¾‹
 
 ''' </td></tr><tr><th colspan="2">
 
-''' å…¶å®ƒ OTHER
+''' ÆäËü OTHER
 
 ''' </th></tr><tr><td class="t2t">
 %!include: ``table.t2t``
@@ -120,9 +120,9 @@ Txt2tags æ ‡è®°ç¤ºä¾‹
 ''' </table>
 
 
-Translated to Chinese by å‘¨ç¦([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet]).
+Translated to Chinese by ÖÜçù([Zoom Quiet http://wiki.woodpecker.org.cn/moin/ZoomQuiet]).
 
-åŠ¨åŠ›æºè‡ª: [txt2tags http://txt2tags.org]
+¶¯Á¦Ô´×Ô: [txt2tags http://txt2tags.org]
 ---------------------
 %!include: file_head.t2t
 ---------------------

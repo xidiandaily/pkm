@@ -27,7 +27,7 @@ sub handle_file{
 }
 
 
-my $search = new File::List("G:\\blog\\pkm");
+my $search = new File::List("F:\\blog\\pkm");
 $search->show_empty_dirs();
 my @files = @{$search->find("\.t2t\$")};
 my @ignore=qw/config.t2t file_head.t2t file_list.t2t/;

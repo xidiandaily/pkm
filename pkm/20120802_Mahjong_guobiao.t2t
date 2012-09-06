@@ -2,10 +2,10 @@
 作者:chiyl
 Last update:%%mtime(%c)
 
-%!includeconf:pkm/config.t2t
+%!includeconf:config.t2t
 
 ---------------------
-%!include: pkm/file_head.t2t
+%!include: file_head.t2t
 ---------------------
 +介绍+
     国标麻将的基本番型。
