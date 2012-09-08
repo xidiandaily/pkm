@@ -7,6 +7,8 @@ Last update:%%mtime(%c)
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
+
 +介绍+
     国标麻将的基本番型。
 

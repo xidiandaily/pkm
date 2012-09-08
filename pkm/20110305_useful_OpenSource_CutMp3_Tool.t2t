@@ -7,6 +7,8 @@ LastUpdate: %%mtime(%c)
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
+
 因为需要将MP3按照静音部分分割开来，现在整理一下开源的MP3剪切工具,比较一下那个更适合用.
 
 +AudioSlicer+

@@ -7,6 +7,7 @@ DOS_快速创建和打开txt2tags.t2t文件
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
 +使用说明+
 ++使用DOS命令"WBWrite[文件名]"快速创建对应的文件++
 	  功能描述: @@

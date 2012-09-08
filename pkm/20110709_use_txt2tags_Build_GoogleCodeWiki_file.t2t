@@ -7,6 +7,8 @@
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
+
 **本文提到的txt2tags插件可以在[我的代码库 https://github.com/xidiandaily/CodeBase/tree/master/2011-05-09%20txt2tags_gvim_google_code_wiki] 中下载。**@@
 + 简介@@
   + txt2tags 介绍@@

@@ -7,6 +7,8 @@ LastUpdate: %%mtime(%c)
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
+
 最近在看《深入理解计算机系统》，对其中的栈的内容十分感兴趣，尤其在解他的练习 CS:APP Labs Bomb[题目在这里: http://csapp.cs.cmu.edu/public/labs.html] 时，对栈内容的解读十分重要。在反汇编得到的源码中，对栈的内容的读取多是通过类似语句（ mov  0x8(%ebp),%edx）来赋值，而gdb的 **x/20xw $esp** 指令只能4列打印出栈的内容，且对基址的位置不清晰，对于分析十分不便。@@
 因此，我写了这个小的perl脚本，配合gdb（使用方法如下），使其栈的显示更加方便,使用方法如下：@@
 [WEBSITE_PKM_RESOURCE20120629_gdb_use.jpg]

@@ -7,6 +7,8 @@ Dos_XP环境下配置gVim
 ---------------------
 %!include: file_head.t2t
 ---------------------
+%!include: change_log.t2t
+
 +设计到的安装文件及版本说明+
 || 文件名称 | 功能 | 版本说明 ||
 | gVim.exe | 主文件 | VI IMProved 7.3.46 |
