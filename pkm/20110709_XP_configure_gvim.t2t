@@ -20,6 +20,27 @@ Dos_XP环境下配置gVim
 | NERD_tree | 显示文件列表 | 4.1.0 |
 | echofunc.vim | NULL ||
 
++使用Tip+
+
+++gvim的自动补全功能++
+   总所周知的是，vim提供了自动补全功能（gvim基于版权考虑，将这个功能称作全能补全）。
+   vim 提供了下列补全：
+| 整行补全                   |     **CTRL-X CTRL-L** |
+| 根据当前文件里关键字补全   |     **CTRL-X CTRL-N** |
+| 根据字典补全               |     **CTRL-X CTRL-K** |
+| 根据同义词字典补全         |     **CTRL-X CTRL-T** |
+| 根据头文件内关键字补全     |     **CTRL-X CTRL-I** |
+| 根据标签补全               |     **CTRL-X CTRL-]** |
+| 补全文件名                 |     **CTRL-X CTRL-F** |
+| 补全宏定义                 |     **CTRL-X CTRL-D** |
+| 补全vim命令                |     **CTRL-X CTRL-V** |
+| 用户自定义补全方式         |     **CTRL-X CTRL-U** |
+| 拼写建议                   |     **CTRL-X S** |
+
+   如果要使用自定义补全命令 **CTRL-X CTRL-O**,只需要实现查找函数，并使用命令 set omnifunc=<自定义查找函数>，即可。@@
+   
+   
+
 +配置+
 ++打开缩进等基本的编辑器编辑功能++
 ```
