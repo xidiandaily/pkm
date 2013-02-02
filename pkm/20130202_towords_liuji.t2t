@@ -3,12 +3,13 @@ toWordsÁù¼¶´Ê»ã
 Last update:%%mtime(%c)
 
 %!includeconf:config.t2t
-
+%!options(html): --toc
 ---------------------
 %!include: file_head.t2t
 ---------------------
 %!include: change_log.t2t
 
+%%toc
 
 +bleach+
 vt.Æ¯°×vi.±ä°×@@
