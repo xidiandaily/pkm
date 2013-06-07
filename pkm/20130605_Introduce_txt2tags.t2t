@@ -59,16 +59,18 @@ txt2tags是一个文本格式化和转换工具。他能够将带特定标记的纯文本文件转换成支持的任
 从上面的表格可以看到，很多文当元素的标记都是很简单易记的。除了上述标记以外，txt2tags其实还提供有更多的标记：例如自动替换生成的时间，根据目标格式不同，产生不同的样式，在转换前/后会自动执行批量修改命令等，这些都是很有意思的功能，有兴趣的同学不妨深入了解一下。
 
 +建议的编辑环境+
-编写txt2tags文档十分简单，你可以使用任意的文本编辑工具都可以。不过正如要达到**编写过程中更少的鼠标操作**的话，我建议的编辑工具是VIM。另外，txt2tags的官网上，也可以找到志愿者贡献的txt2tags语法高亮插件，编译支持插件，使得txt2tags文档编写过程更加愉快。@@
+编写txt2tags文档十分简单，你可以使用任意的文本编辑工具都可以。不过正如要达到**编写过程中更少的鼠标操作**的话，我建议的编辑工具是VIM。另外，txt2tags的官网上，也可以找到志愿者编写的txt2tags语法高亮插件，编译支持插件，使得txt2tags文档编写过程更加愉快。@@
 
 +实例+
+本文就是txt2tags应用的实例，我将原始文档和转换后的html截取部分展示如下。同学们也可以访问文中的两个链接，查看原始文档和转成的html。@@
+''[原始文档 192.168.100.144/txt2tags/introduce/20130605_Introduce_txt2tags.t2t]''@@
+''[转换之后的文档 192.168.100.144/txt2tags/introduce/20130605_Introduce_txt2tags.html]''
+[httpCOLONSLASHSLASHpic.yupoo.comSLASHxidiandaily_vSLASHCV3rl2dFSLASHnDxLe.jpg]
 
 +扩展阅读+
 有兴趣的同学，可以通过下面的链接，更加深入地了解txt2tags工具，自从我使用txt2tags以来，获益许多，希望你们也能喜欢上这个工具。@@
 ''[txt2tag标记示例(中文)——周琦(Zoom Quiet) http://txt2tags.org/zh/markup-zh.html]'' @@
 ''[txt2tags在线使用示范  http://txt2tags.org/online.php]'' @@
+''[''**txt2tags用户指南（这个文档详细地介绍了用户如何创建他的第一个txt2tags文档）** http://txt2tags.org/zh/userguide-zh/userguide-zh.html]@@
 ''[txt2tags使用说明(官方中文版) http://txt2tags.org/docs.html]'' @@
-''[]'' @@
-
-
 
