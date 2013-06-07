@@ -1,5 +1,5 @@
 #!/usr/bin perl
-$PKM_DIR="F:/blog/pkm/";
+$PKM_DIR="G:/blog/pkm/";
 
 sub handle_file
 {

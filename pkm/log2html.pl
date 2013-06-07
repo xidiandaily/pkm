@@ -1,6 +1,6 @@
 #!/user/bin/perl
 
-$FILE_DIR="\"F:/blog/pkm/\"";
+$FILE_DIR="\"G:/blog/pkm/\"";
 
 #if(!open FILE_LIST,"<".$FILE_DIR."file_list.tmp")
 #{
@@ -9,7 +9,7 @@ $FILE_DIR="\"F:/blog/pkm/\"";
 
 sub get_log{
     my $file=$_[0];
-    my $GIT_HOME="\"C:/Program Files/Git/bin/\"";
+    my $GIT_HOME="\"C:/Program Files (x86)/Git/bin/\"";
     my $CHNAG_TITLE="\n\n\n\n|| 更改内容 | 时间 | 更改人 | git 版本 ||";
     my $CHANG_LOG_FILE="change_log.t2t";
     my $convcmd=" | iconv -f utf-8 -t cp936 ";
@@ -24,7 +24,7 @@ sub get_log{
 
 sub build_html{
     my $file=$_[0];
-    my $T2T_HOME="D:/txt2tags/txt2tags.py ";
+    my $T2T_HOME="D:/txt2tags/txt2tags-2.6.py ";
     my $cmd=$T2T_HOME.$FILE_DIR.$file;
     print $cmd."\n";
     

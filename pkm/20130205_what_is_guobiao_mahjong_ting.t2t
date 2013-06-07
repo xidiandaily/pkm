@@ -3,7 +3,7 @@
 Last update:%%mtime(%c)
 
 %!includeconf:config.t2t
-%!target: doku
+%%!target: doku
 
 ---------------------
 %!include: file_head.t2t
