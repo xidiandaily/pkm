@@ -438,6 +438,7 @@ small, #sidebar ul ul li, #sidebar ul ol li, .nocomments, .postmetadata, strike 
 
 /*文章中表格的樣式*/
 table {
+    font-size: 12px;
     border-top: 2px solid #CCC;
     border-left: 2px solid #CCC;
     border-spacing: 0;
@@ -467,7 +468,8 @@ p{
     padding: .3em;
     margin: 0 4em 0 2em; 
     font: 75% "Consolas","DejaVu Sans YuanTi","Microsoft YaHei","WenQuanYi Zen Hei","微软雅黑","文泉驿正黑";
-    font-size: 13px;	 	 
+    font-size: 13px;	 
+    text-indent:26px;    	 	 
  }
 
 li{
