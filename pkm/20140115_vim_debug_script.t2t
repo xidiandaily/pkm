@@ -1,0 +1,60 @@
+vim脚本调试
+作者:池育龙
+时间：%%mtime(%c)
+
+%!includeconf:config.t2t
+
+---------------------
+%!include: file_head.t2t
+---------------------
+%!include: change_log.t2t
+
++简介+
+本文介绍vim的脚本调试相关的知识，包括对vim脚本的断点设置、单步执行、日志的输出(runtime log)。
+
++vim脚本介绍+
+Vim编辑器的方便体现其的高度可定制化，你可以根据自己的需求编写各种插件、脚本来定制vim编辑器功能，使得它非常个性化，非常贴合你的个人需求。@@
+vim脚本是实现个性化很重要的工具，他的介绍见:[Vim 脚本语言 http://vimcdoc.sourceforge.net/doc/usr_41.html],有兴趣可以熟悉一下。vim的官网上也提供了很多很有用、很有意思的脚本，可以根据自己的需要选用[vim官网脚本区 http://www.vim.org/scripts/]。@@
+但是我们在开始编写的脚本，甚至于一开始安装、配置、使用别人已经写好的脚本时，很多时候都发现结果不原先想象那样，-_-!! 我们在面对这些问题时，除了可以google、查看手册以外，还可以使用本文所介绍的一些vim调试手段来定位问题，并加以解决。避免因为google无法帮忙时就束手无策，只能卸载重装、来回折腾还无法解决问题的尴尬局面了。
+**本文基本内容是vim帮助手册中的内容,另外加上我的一些实际操作，如果我所写的和手册中冲突，以手册为准。如果需要了解更多脚本调试的信息，可以在vim中执行命令**`:h debug-scripts`**得到更多的信息**.@@
+**本文环境为gvim 7.3.46, win7**@@
+
++Vim脚本调试+
+我们可以在vim启动时候就开始调试，也可以在启动后，执行某个vim脚本、调用某个vim函数的时候进入调试模式。我们可以根据vim函数来设置断点，也可以根据脚本文件行号来设置断点.非常方便。
+++背景知识++
+`e:\temp\start gvim.exe -S "%VIMPROJ%\GameServer.vim"` 或者 `e:\temp\gvim.exe -S "%VIMPROJ%\GameServer.vim"` 可以在vim启动之后，自动执行**GameServer.vim**脚本。@@
+
+++进入调试++
++ 启动时候进入调试模式
+`e:\temp>gvim -D file.txt`，这个命令可以vim启动的时候就进入调试模式，进入调试模式之后，输入 `n`就可以单步调试。@@
++ 启动时候，当加载到某一个vim脚本的时候进入调试模式
+`E:\temp>start gvim.exe -c "breakadd file */InitCPP.vim" -S "%VIMPROJ%\GameServer.vim"`.启动之后，加载到 **InitCPP.vim**文件时，进入到调试模式。这个命令在定位新安装的脚本无法正常工作时候非常有用，**注意，这里文件使用的是通配符，加入在启动时候需要加载不同目录，多个InitCPP，那么会在加载第一个时候进入调试模式**@@
+`E:\temp>start gvim.exe -c "breakadd file 69 */InitCPP.vim" -S "%VIMPROJ%\GameServer.vim"`.启动后，加载到**InitCPP.vim第69行时候**，进入到调试模式。
+
++ vim在调用某个函数时候，进入调试模式
+vim启动之后，使用命令`breakadd func UPFILE_default`.那么当执行 UPFILE_default时候，vim会自动进入调试模式。
+
+++调试模式++
++设置、取消断点+
+`:breakadd file [lnum] [name]` 在文件（文件名为name），第（lnum）行设置断点。当vim加载到该位置时，会自动进入调试模式。@@
+`:breakadd func [lnum] [name]` 在函数（函数名为name），第（lnum）行设置断点。当vim加载到该位置时，会自动进入调试模式。@@
+`:breaklist` 列出当前设置的所有断点。@@
+`:breakdel {nr}` 删除第（nr）号断点。
++调试模式的操作+
+|| 命令 | 意义 ||
+| cont | continue 继续 |
+| quit | quit |
+| next | next |
+| step | step |
+| finish | 结束当前调试模式，等待下一次再次进入调试模式 |
+| echo idx | 查看变量idx的值 |
+| echo g:idx | 查看全局变量idx的值 |
+| echo g:idx | 查看全局变量idx的值 |
+| set verbose=20 | 设置verbose变量的值20 |
+| set verbose=20 | 设置verbose变量的值20 |
+
++其他+
+++运行日志++
+`E:\temp>start gvim.exe -V9{dir/filename} ` 启动vim并且记录运行日志，日志保存在 dir 路径下的 filename 文件中。 **注意：如果不指定路径，那么会存在程序启动路径，比较难找-_-!!**@@
+vim中的报警、出错信息、运行记录都会记录在日志中。
+
